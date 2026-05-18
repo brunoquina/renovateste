@@ -7,16 +7,14 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
-// CHAVE SECRETA (Sempre use a sk_live para operações reais)
+// Suas credenciais fornecidas
 const SECRET_KEY = "sk_live_v2XTGFli2wGd1fmZVU5k3FpLeLuIvj0RRp";
 
 app.post('/api/gerar-pix', async (req, res) => {
     try {
         const { name, email, cpf, phone, amount } = req.body;
 
-        // Limpeza de dados para garantir que a API aceite
-        const cleanCPF = cpf.replace(/\D/g, '');
-        const cleanPhone = phone.replace(/\D/g, '');
+        // A documentação exige o valor em centavos (inteiro)
         const amountInCents = Math.round(parseFloat(amount) * 100);
 
         const payload = {
@@ -25,48 +23,40 @@ app.post('/api/gerar-pix', async (req, res) => {
             customer: {
                 name: name,
                 email: email,
-                document: cleanCPF,
-                phone_number: cleanPhone
+                document: cpf.replace(/\D/g, ''),
+                phone_number: phone.replace(/\D/g, '')
             },
             items: [{
-                title: "Produto Checkout",
+                title: "Kit Promocional",
                 unit_price: amountInCents,
                 quantity: 1
             }]
         };
 
-        // Chamada oficial seguindo a documentação V1
+        // Conforme a documentação: Autenticação Basic (Chave:Vazio) em Base64
+        const authHeader = 'Basic ' + Buffer.from(SECRET_KEY + ':').toString('base64');
+
         const response = await axios.post('https://api.assetpay.com.br/api/v1/transactions', payload, {
-            auth: {
-                username: SECRET_KEY,
-                password: '' // Obrigatório ser vazio conforme a especificação de Basic Auth deles
-            },
             headers: {
+                'Authorization': authHeader,
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
         });
 
-        // A API V1 retorna o link ou o código do PIX dentro de 'payment_details' ou na raiz
-        const pixData = response.data;
-        const pixCode = pixData.pix_qr_code || 
-                        (pixData.payment_details ? pixData.payment_details.pix_qr_code : null);
-
-        if (!pixCode) {
-            throw new Error("Resposta da API não contém pix_qr_code");
-        }
+        // Extração do código PIX da resposta
+        const pixCode = response.data.pix_qr_code || 
+                        (response.data.payment_details && response.data.payment_details.pix_qr_code);
 
         res.json({ success: true, pix_code: pixCode });
 
     } catch (error) {
-        // Log detalhado para capturar o motivo real do erro nos logs do Render
-        const errorDetail = error.response ? error.response.data : error.message;
-        console.error('ERRO ASSETPAY:', JSON.stringify(errorDetail));
+        // Log para depuração no console do servidor
+        console.error('ERRO ASSETPAY:', error.response ? JSON.stringify(error.response.data) : error.message);
         
-        res.status(500).json({ 
+        res.status(error.response ? error.response.status : 500).json({ 
             success: false, 
-            message: "Erro na autenticação ou processamento",
-            details: errorDetail 
+            error: error.response ? error.response.data : error.message 
         });
     }
 });
