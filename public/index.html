@@ -130,7 +130,7 @@
         let basePrice = 59.00;
         let shippingPrice = 0.00;
 
-        // Máscaras
+        // Máscaras de Input
         document.getElementById('cpf').oninput = (e) => {
             let v = e.target.value.replace(/\D/g, '').slice(0,11);
             v = v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
@@ -142,6 +142,7 @@
             e.target.value = v;
         };
 
+        // Máscara e busca de CEP
         function mascaraCEP(i) {
             let v = i.value.replace(/\D/g, '');
             if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5, 8);
@@ -159,7 +160,7 @@
                         document.getElementById('neighborhood').value = data.bairro;
                         document.getElementById('number').focus();
                     }
-                } catch (e) { console.error("Erro busca CEP"); }
+                } catch (e) { console.error("Erro ao buscar CEP"); }
             }
         }
 
