@@ -142,14 +142,12 @@
             e.target.value = v;
         };
 
-        // Máscara e limite CEP
         function mascaraCEP(i) {
             let v = i.value.replace(/\D/g, '');
             if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5, 8);
             i.value = v;
         }
 
-        // Auto-preenchimento CEP
         async function buscaCEP(cep) {
             const cleanCep = cep.replace(/\D/g, '');
             if (cleanCep.length === 8) {
@@ -161,7 +159,7 @@
                         document.getElementById('neighborhood').value = data.bairro;
                         document.getElementById('number').focus();
                     }
-                } catch (e) { console.error("Erro ao buscar CEP"); }
+                } catch (e) { console.error("Erro busca CEP"); }
             }
         }
 
