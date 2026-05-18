@@ -23,6 +23,7 @@
         .step.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .shipping-card.selected { border-color: #007bff; background-color: #f0f7ff; }
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
     </style>
 </head>
 <body class="text-slate-800 pb-12">
@@ -36,6 +37,10 @@
             </div>
         </div>
     </header>
+
+    <div class="bg-brand-pink text-white text-center py-2 text-xs font-medium">
+        Atenção: a promoção encerra hoje! Frete grátis liberado.
+    </div>
 
     <div class="max-w-xl mx-auto mt-6 px-4">
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6">
@@ -63,32 +68,32 @@
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
             <div id="step-1" class="step active">
-                <h2 class="font-bold text-lg mb-4 flex items-center gap-2">Identificação</h2>
+                <h2 class="font-bold text-lg mb-4 flex items-center gap-2"><span class="bg-slate-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span> Identificação</h2>
                 <div class="space-y-4">
-                    <input type="text" id="name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="Nome completo">
-                    <input type="email" id="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="E-mail">
-                    <input type="text" id="cpf" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="000.000.000-00">
-                    <input type="text" id="phone" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="(00) 00000-0000">
+                    <input type="text" id="name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-blue outline-none" placeholder="Nome completo">
+                    <input type="email" id="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-blue outline-none" placeholder="E-mail">
+                    <input type="text" id="cpf" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-blue outline-none" placeholder="000.000.000-00">
+                    <input type="text" id="phone" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-blue outline-none" placeholder="(00) 00000-0000">
                     <button class="w-full bg-brand-blue text-white font-semibold rounded-xl py-4" onclick="nextStep(2)">Ir Para Entrega</button>
                 </div>
             </div>
 
             <div id="step-2" class="step">
-                <h2 class="font-bold text-lg mb-4 flex items-center gap-2">Entrega</h2>
+                <h2 class="font-bold text-lg mb-4 flex items-center gap-2"><span class="bg-slate-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span> Entrega</h2>
                 <div class="space-y-4">
-                    <input type="text" id="cep" maxlength="9" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="00000-000" oninput="mascaraCEP(this)" onblur="buscaCEP(this.value)">
-                    <input type="text" id="address" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="Endereço">
+                    <input type="text" id="cep" maxlength="9" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none" placeholder="CEP" oninput="mascaraCEP(this)" onblur="buscaCEP(this.value)">
+                    <input type="text" id="address" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none" placeholder="Endereço">
                     <div class="flex gap-3">
-                        <input type="text" id="number" class="w-1/3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="Nº">
-                        <input type="text" id="neighborhood" class="w-2/3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" placeholder="Bairro">
+                        <input type="text" id="number" class="w-1/3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none" placeholder="Nº">
+                        <input type="text" id="neighborhood" class="w-2/3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none" placeholder="Bairro">
                     </div>
                     <div class="pt-2">
                         <div class="shipping-card border-2 rounded-xl p-3 mb-3 flex justify-between selected" onclick="selectShipping(0, this)">
-                            <div class="flex gap-2"><div><p class="text-sm font-bold">Frete Grátis</p><p class="text-xs text-slate-500">5-6 dias</p></div></div>
+                            <div class="flex gap-2"><input type="radio" checked name="sh" class="pointer-events-none"><div><p class="text-sm font-bold">Frete Grátis</p><p class="text-xs text-slate-500">5-6 dias</p></div></div>
                             <span class="text-green-600 font-bold text-sm">Grátis</span>
                         </div>
                         <div class="shipping-card border-2 rounded-xl p-3 flex justify-between" onclick="selectShipping(23.65, this)">
-                            <div class="flex gap-2"><div><p class="text-sm font-bold">Frete Expresso</p><p class="text-xs text-slate-500">Até 2 dias</p></div></div>
+                            <div class="flex gap-2"><input type="radio" name="sh" class="pointer-events-none"><div><p class="text-sm font-bold">Frete Expresso</p><p class="text-xs text-slate-500">Até 2 dias</p></div></div>
                             <span class="font-bold text-sm">R$ 23,65</span>
                         </div>
                     </div>
@@ -97,20 +102,26 @@
             </div>
 
             <div id="step-3" class="step">
-                <h2 class="font-bold text-lg mb-4 flex items-center gap-2">Pagamento</h2>
-                <div class="border-2 border-brand-blue rounded-2xl p-4 mb-5 bg-blue-50 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-                        <i class="bi bi-qr-code-scan text-brand-blue text-xl"></i>
-                    </div>
-                    <div><p class="text-sm font-bold">PIX</p><p class="text-xs text-green-700">Aprovação imediata</p></div>
+                <h2 class="font-bold text-lg mb-4 flex items-center gap-2"><span class="bg-slate-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span> Pagamento</h2>
+                <div class="border-2 border-brand-blue rounded-2xl p-4 mb-5 bg-blue-50">
+                    <span class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-9 h-9 rounded-full bg-white shadow-sm">
+                            <svg class="w-5 h-5" viewBox="0 0 512 512"><g fill="#4BB8A9"><path d="M112.57 391.19c20.056 0 38.928-7.808 53.12-22l76.693-76.692c5.385-5.404 14.765-5.384 20.15 0l76.989 76.989c14.191 14.172 33.045 21.98 53.12 21.98h15.098l-97.138 97.139c-30.326 30.344-79.505 30.344-109.85 0l-97.415-97.416h9.232zm280.068-271.294c-20.056 0-38.929 7.809-53.12 22l-76.97 76.99c-5.551 5.53-14.6 5.568-20.15-.02l-76.711-76.693c-14.192-14.191-33.046-21.999-53.12-21.999h-9.234l97.416-97.416c30.344-30.344 79.523-30.344 109.867 0l97.138 97.138h-15.116z"/><path d="M22.758 200.753l58.024-58.024h31.787c13.84 0 27.384 5.605 37.172 15.394l76.694 76.693c7.178 7.179 16.596 10.768 26.033 10.768 9.417 0 18.854-3.59 26.014-10.75l76.989-76.99c9.787-9.787 23.331-15.393 37.171-15.393h37.654l58.3 58.302c30.343 30.344 30.343 79.523 0 109.867l-58.3 58.303H392.64c-13.84 0-27.384-5.605-37.171-15.394l-76.97-76.99c-13.914-13.894-38.172-13.894-52.066.02l-76.694 76.674c-9.788 9.788-23.332 15.413-37.172 15.413H80.782L22.758 310.62c-30.344-30.345-30.344-79.524 0-109.868"/></g></svg>
+                        </span>
+                        <span class="flex flex-col"><span class="text-sm font-bold">PIX</span><span class="text-xs text-green-700 font-bold">Aprovação imediata</span></span>
+                    </span>
+                    <p class="text-xs text-slate-500 mt-3 ml-12">O código expira em 30 minutos.</p>
                 </div>
-                <button id="btn-finalizar" class="w-full bg-brand-blue text-white font-bold text-lg rounded-xl py-4 shadow-lg" onclick="gerarPix()">Finalizar Compra</button>
+                <button id="btn-finalizar" class="w-full bg-brand-blue text-white font-bold text-lg rounded-xl py-4 shadow-lg shadow-blue-500/20" onclick="gerarPix()">Finalizar Compra</button>
             </div>
 
             <div id="step-pix" class="step text-center">
-                <h3 class="font-extrabold text-2xl mb-4">Pague com PIX</h3>
-                <textarea id="pix-code" class="w-full bg-slate-50 border rounded-xl p-3 text-[10px] mb-4" rows="4" readonly></textarea>
-                <button class="w-full bg-brand-green text-white font-bold rounded-xl py-4 mb-4" onclick="copyPix()">Copiar Código PIX</button>
+                <h3 class="font-extrabold text-2xl mb-2">Já é quase seu...</h3>
+                <p class="text-sm text-slate-500 mb-6">Pague em até <span id="timer" class="font-bold text-slate-800">29:55</span></p>
+                <img src="https://assetsglobalbr.com/app/pix-checkout.png" class="mx-auto w-44 mb-6">
+                <input type="text" id="pix-code" class="w-full bg-slate-50 border rounded-xl px-4 py-4 text-[10px] text-center mb-4" readonly>
+                <button class="w-full bg-brand-green text-white font-bold text-lg rounded-xl py-4 mb-4" onclick="copyPix()">Copiar código pix</button>
+                <p class="text-lg font-bold">Total: <span id="valor-final-pix" class="text-brand-green">R$ 59,00</span></p>
             </div>
         </div>
     </div>
@@ -119,12 +130,26 @@
         let basePrice = 59.00;
         let shippingPrice = 0.00;
 
+        // Máscaras
+        document.getElementById('cpf').oninput = (e) => {
+            let v = e.target.value.replace(/\D/g, '').slice(0,11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = v;
+        };
+        document.getElementById('phone').oninput = (e) => {
+            let v = e.target.value.replace(/\D/g, '').slice(0,11);
+            v = v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+            e.target.value = v;
+        };
+
+        // Máscara e limite CEP
         function mascaraCEP(i) {
             let v = i.value.replace(/\D/g, '');
             if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5, 8);
             i.value = v;
         }
 
+        // Auto-preenchimento CEP
         async function buscaCEP(cep) {
             const cleanCep = cep.replace(/\D/g, '');
             if (cleanCep.length === 8) {
@@ -136,7 +161,7 @@
                         document.getElementById('neighborhood').value = data.bairro;
                         document.getElementById('number').focus();
                     }
-                } catch (e) { console.error("Erro busca CEP"); }
+                } catch (e) { console.error("Erro ao buscar CEP"); }
             }
         }
 
@@ -158,14 +183,17 @@
 
         async function gerarPix() {
             const btn = document.getElementById('btn-finalizar');
-            btn.innerText = "Processando..."; btn.disabled = true;
+            btn.innerText = "Processando...";
+            btn.disabled = true;
+
             const payload = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 cpf: document.getElementById('cpf').value,
                 phone: document.getElementById('phone').value,
-                amount: (basePrice + shippingPrice)
+                amount: basePrice + shippingPrice
             };
+
             try {
                 const res = await fetch('/api/gerar-pix', {
                     method: 'POST',
@@ -175,17 +203,26 @@
                 const data = await res.json();
                 if(data.success) {
                     document.getElementById('pix-code').value = data.pix_code;
+                    document.getElementById('valor-final-pix').innerText = `R$ ${(basePrice+shippingPrice).toFixed(2).replace('.',',')}`;
                     nextStep('pix');
-                } else { alert("Erro ao gerar PIX."); }
-            } catch(e) { alert("Erro de conexão."); }
+                    iniciarTimer();
+                } else { alert("Erro ao gerar PIX"); }
+            } catch(e) { alert("Erro de conexão"); }
             btn.innerText = "Finalizar Compra"; btn.disabled = false;
         }
 
         function copyPix() {
-            const copyText = document.getElementById("pix-code");
-            copyText.select();
-            document.execCommand("copy");
+            navigator.clipboard.writeText(document.getElementById('pix-code').value);
             alert("Copiado!");
+        }
+
+        function iniciarTimer() {
+            let t = 1800;
+            setInterval(() => {
+                let m = Math.floor(t/60); let s = t%60;
+                document.getElementById('timer').innerText = `${m}:${s<10?'0'+s:s}`;
+                t--;
+            }, 1000);
         }
     </script>
 </body>
