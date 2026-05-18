@@ -7,8 +7,8 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
-// SUA CHAVE DA ASSETPAY
-const API_KEY = "pk_live_v2Zf4wNjOjpvigiAv0Mb6eXwn4lBCmJCQj";
+// CHAVE SECRETA (USAR SEMPRE SK PARA BACKEND)
+const SECRET_KEY = "sk_live_v2XTGFli2wGd1fmZVU5k3FpLeLuIvj0RRp";
 
 app.post('/api/gerar-pix', async (req, res) => {
     try {
@@ -23,43 +23,33 @@ app.post('/api/gerar-pix', async (req, res) => {
                 document: cpf.replace(/\D/g, ''),
                 phone_number: phone.replace(/\D/g, '')
             },
-            items: [
-                {
-                    title: "Pedido Checkout",
-                    unit_price: Math.round(parseFloat(amount) * 100),
-                    quantity: 1
-                }
-            ]
+            items: [{
+                title: "Kit Promocional",
+                unit_price: Math.round(parseFloat(amount) * 100),
+                quantity: 1
+            }]
         };
 
-        // CORREÇÃO AQUI: Gerando o Token Base64 para o Header de autorização
-        const token = Buffer.from(`${API_KEY}:`).toString('base64');
+        // Autenticação Basic correta
+        const authHeader = 'Basic ' + Buffer.from(SECRET_KEY + ':').toString('base64');
 
         const response = await axios.post('https://api.assetpay.com.br/api/v1/transactions', payload, {
             headers: {
-                'Authorization': `Basic ${token}`,
+                'Authorization': authHeader,
                 'Content-Type': 'application/json'
             }
         });
 
-        console.log("Sucesso AssetPay:", response.data);
+        const pixCode = response.data.pix_qr_code || 
+                        (response.data.payment_details && response.data.payment_details.pix_qr_code);
 
-        // Ajuste para pegar o código pix correto conforme o retorno da API
-        const pixCode = response.data.pix_qr_code || (response.data.payment_details && response.data.payment_details.pix_qr_code);
-
-        res.json({
-            success: true,
-            pix_code: pixCode
-        });
+        res.json({ success: true, pix_code: pixCode });
 
     } catch (error) {
         console.error('ERRO NA ASSETPAY:', error.response ? error.response.data : error.message);
-        res.status(500).json({ 
-            success: false, 
-            error: error.response ? error.response.data.message : "Erro interno" 
-        });
+        res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
     }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor ON na porta ${PORT}`));
