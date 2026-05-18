@@ -8,9 +8,8 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
-// ENV NO RENDER
-const API_KEY = process.env.API_KEY;
-const PLATFORM_ID = process.env.PLATFORM_ID;
+const SECRET_KEY = process.env.SECRET_KEY;
+const PUBLIC_KEY = process.env.PUBLIC_KEY;
 
 app.post('/api/gerar-pix', async (req, res) => {
 
@@ -19,45 +18,61 @@ app.post('/api/gerar-pix', async (req, res) => {
         const { name, email, cpf, phone, amount } = req.body;
 
         const payload = {
-            name: name,
-            email: email,
-            phone: phone.replace(/\D/g, ''),
-            document: cpf.replace(/\D/g, ''),
-            amount: Number(amount),
-            description: "Kit Promocional",
-            platform: PLATFORM_ID
+            amount: Math.round(amount * 100),
+            paymentMethod: "PIX",
+
+            customer: {
+                name: name,
+                email: email,
+                phone: phone.replace(/\D/g, ''),
+                document: {
+                    type: "CPF",
+                    number: cpf.replace(/\D/g, '')
+                }
+            },
+
+            items: [
+                {
+                    title: "Kit Promocional",
+                    unitPrice: Math.round(amount * 100),
+                    quantity: 1
+                }
+            ],
+
+            pix: {
+                expiresInDays: 1
+            }
         };
 
-        console.log("PAYLOAD ENVIADO:");
-        console.log(payload);
+        const auth = Buffer
+            .from(`${SECRET_KEY}:${PUBLIC_KEY}`)
+            .toString('base64');
 
         const response = await axios.post(
-            'https://painel.virtualpay.com.br/api/v1/transaction/pix/cashin',
+            'https://api.assetpay.com.br/api/v1/transactions',
             payload,
             {
                 headers: {
-                    'Authorization': `Bearer ${API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Authorization': `Basic ${auth}`,
+                    'Content-Type': 'application/json'
                 }
             }
         );
 
-        console.log("RESPOSTA API:");
         console.log(response.data);
 
         res.json({
             success: true,
-            data: response.data
+            pix_code: response.data.pix.qrcode,
+            pix_qrcode: response.data.pix.qrcodeUrl
         });
 
     } catch (error) {
 
-        console.log("ERRO COMPLETO:");
+        console.log("ERRO:");
 
         if (error.response) {
             console.log(error.response.data);
-            console.log(error.response.status);
 
             return res.status(500).json({
                 success: false,
