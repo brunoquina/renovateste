@@ -1,3 +1,6 @@
+```js
+// server.js
+
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -17,8 +20,10 @@ app.post('/api/gerar-pix', async (req, res) => {
 
         const { name, email, cpf, phone, amount } = req.body;
 
+        const valorCentavos = Math.round(Number(amount) * 100);
+
         const payload = {
-            amount: Math.round(amount * 100),
+            amount: valorCentavos,
             paymentMethod: "PIX",
 
             customer: {
@@ -34,7 +39,7 @@ app.post('/api/gerar-pix', async (req, res) => {
             items: [
                 {
                     title: "Kit Promocional",
-                    unitPrice: Math.round(amount * 100),
+                    unitPrice: valorCentavos,
                     quantity: 1
                 }
             ],
@@ -59,6 +64,7 @@ app.post('/api/gerar-pix', async (req, res) => {
             }
         );
 
+        console.log("PIX GERADO:");
         console.log(response.data);
 
         res.json({
@@ -69,9 +75,10 @@ app.post('/api/gerar-pix', async (req, res) => {
 
     } catch (error) {
 
-        console.log("ERRO:");
+        console.log("ERRO AO GERAR PIX");
 
         if (error.response) {
+
             console.log(error.response.data);
 
             return res.status(500).json({
@@ -82,7 +89,7 @@ app.post('/api/gerar-pix', async (req, res) => {
 
         console.log(error.message);
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             error: error.message
         });
@@ -94,3 +101,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
+```
