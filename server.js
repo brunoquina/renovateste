@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
-// CHAVE SECRETA (USAR SEMPRE SK PARA BACKEND)
+// CHAVE SECRETA FORNECIDA (USAR SEMPRE SK PARA API)
 const SECRET_KEY = "sk_live_v2XTGFli2wGd1fmZVU5k3FpLeLuIvj0RRp";
 
 app.post('/api/gerar-pix', async (req, res) => {
@@ -30,7 +30,7 @@ app.post('/api/gerar-pix', async (req, res) => {
             }]
         };
 
-        // Autenticação Basic correta
+        // FORMATO DE AUTENTICAÇÃO EXIGIDO PELA ASSETPAY
         const authHeader = 'Basic ' + Buffer.from(SECRET_KEY + ':').toString('base64');
 
         const response = await axios.post('https://api.assetpay.com.br/api/v1/transactions', payload, {
@@ -40,6 +40,7 @@ app.post('/api/gerar-pix', async (req, res) => {
             }
         });
 
+        // Pegando o código PIX do retorno
         const pixCode = response.data.pix_qr_code || 
                         (response.data.payment_details && response.data.payment_details.pix_qr_code);
 
@@ -52,4 +53,4 @@ app.post('/api/gerar-pix', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor ON na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
